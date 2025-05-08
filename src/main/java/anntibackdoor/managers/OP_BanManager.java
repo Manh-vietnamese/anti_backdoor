@@ -1,23 +1,24 @@
 package anntibackdoor.managers;
 
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import anntibackdoor.SupportServer;
+import anntibackdoor.Main_plugin;
 
+import java.util.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
+import java.text.SimpleDateFormat;
 
-public class BanManager {
-    private final SupportServer plugin;
+import org.bukkit.Bukkit;
+import org.bukkit.BanList;
+import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+public class OP_BanManager {
+    private final Main_plugin plugin;
     private final File bansFile;
     private YamlConfiguration bansConfig;
 
-    public BanManager(SupportServer plugin) {
+    public OP_BanManager(Main_plugin plugin) {
         this.plugin = plugin;
         this.bansFile = new File(plugin.getDataFolder(), "bans.yml");
         loadBans();

@@ -1,15 +1,15 @@
 package anntibackdoor.config;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WhitelistManager {
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class OP_Manager {
     private final JavaPlugin plugin;
     private final Set<AllowedOP> allowedOPs = new HashSet<>();
     private final File whitelistFile;
@@ -28,7 +28,7 @@ public class WhitelistManager {
         public String getName() { return name; }
     }
 
-    public WhitelistManager(JavaPlugin plugin) {
+    public OP_Manager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.whitelistFile = new File(plugin.getDataFolder(), "whitelist_op.yml");
         initializeFile();

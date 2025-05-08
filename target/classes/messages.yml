@@ -1,0 +1,38 @@
+reload_success: "&bPlugin đã reload thành công!"
+no_permission: "&cBạn không có quyền sử dụng lệnh này!" 
+
+invalid_command: "&cLệnh không hợp lệ!"
+
+player_remove_op: "&aĐã xóa &e%player% &akhỏi danh sách OP hợp lệ!"
+player_not_op: "§cKhông thể OP người chơi này!"
+player_not_found: "&cKhông tìm thấy người chơi &e%player% &ctrong whitelist!"
+player_not_online: "§cNgười chơi không online!"
+
+op_violation_kick: "&cBạn đã bị kick do Khai thác quyền OP trái phép!"
+op_violation_log: "&4[Security] &cĐã xóa OP và kick %player% - UUID: %uuid%"
+
+unban_usage: "§cSử dụng: /unban <tên người chơi>"
+unban_success: "§aĐã gỡ ban cho §e%player%!"
+unban_fail: "§cKhông tìm thấy người chơi §e%player% §ctrong danh sách bị ban!"
+
+wop_unban_success: "§aĐã gỡ ban cho người chơi %player%!"
+wop_unban_fail: "§cKhông tìm thấy người chơi %player% trong danh sách ban."
+wop_unban_usage: "§eSử dụng: /wop unban <tên-người-chơi>"
+
+wop_ban_usage: "§eSử dụng: /wop ban <tên-người-chơi> <thời gian> (ví dụ: 1d, 2h, 30m)"
+wop_ban_invalid_time: "§cThời gian ban không hợp lệ! Ví dụ: 1d (1 ngày), 2h (2 giờ)"
+wop_ban_success: "§aĐã ban §e%player% §atrong §e%time%"
+
+ban:
+  permanent: |-
+    &cBạn đã bị ban vĩnh viễn!
+    &fLý do: &e%reason%
+    &fBan bởi: &e%admin%
+    &fLiên hệ quản trị viên để biết thêm chi tiết
+    
+  temporary: |-
+    &cBạn đã bị ban tạm thời!
+    &fLý do: &e%reason%
+    &fBan bởi: &e%admin%
+    &fLệnh ban của bạn sẽ được gỡ bỏ vào: &e%time%
+    &fLiên hệ quản trị viên nếu có nhầm lẫn

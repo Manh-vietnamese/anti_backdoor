@@ -1,18 +1,18 @@
 package anntibackdoor.listeners;
 
+import anntibackdoor.Main_plugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import anntibackdoor.SupportServer;
+public class OP_PlayerJoin implements Listener {
+    private final Main_plugin plugin;
 
-public class PlayerJoinListener implements Listener {
-    private final SupportServer plugin;
-
-    public PlayerJoinListener(SupportServer plugin) {
+    public OP_PlayerJoin(Main_plugin plugin) {
         this.plugin = plugin;
     }
 

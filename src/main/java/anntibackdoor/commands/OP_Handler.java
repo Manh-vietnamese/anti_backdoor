@@ -1,19 +1,19 @@
 package anntibackdoor.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import anntibackdoor.SupportServer;
+import anntibackdoor.Main_plugin;
 
 import java.util.UUID;
 
-public class OpHandler implements CommandExecutor {
-    private final SupportServer plugin;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
-    public OpHandler(SupportServer plugin) {
+public class OP_Handler implements CommandExecutor {
+    private final Main_plugin plugin;
+
+    public OP_Handler(Main_plugin plugin) {
         this.plugin = plugin;
     }
 

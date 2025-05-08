@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-public class BanCheckListener implements Listener {
+public class OP_BanCheck implements Listener {
     
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {

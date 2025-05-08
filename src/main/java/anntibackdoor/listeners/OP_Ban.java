@@ -1,15 +1,16 @@
 package anntibackdoor.listeners;
 
-import org.bukkit.event.EventHandler;
+import anntibackdoor.Main_plugin;
+import anntibackdoor.managers.OP_BanManager;
+
 import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
-import anntibackdoor.SupportServer;
-import anntibackdoor.managers.BanManager;
 
-public class BanListener implements Listener {
-    private final BanManager banManager;
+public class OP_Ban implements Listener {
+    private final OP_BanManager banManager;
 
-    public BanListener(SupportServer plugin) {
+    public OP_Ban(Main_plugin plugin) {
         this.banManager = plugin.getBanManager();
     }
 

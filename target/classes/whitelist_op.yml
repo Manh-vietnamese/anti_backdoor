@@ -1,0 +1,6 @@
+allowed_ops: []
+  # - name: PlayerName1
+  #   uuid: "uuid1"
+  # - name: PlayerName2
+  #   uuid: "uuid2"
+

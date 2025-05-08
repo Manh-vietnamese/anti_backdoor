@@ -7,7 +7,6 @@ import anntibackdoor.config.OP_Manager;
 import anntibackdoor.listeners.OP_PlayerJoin;
 
 import java.util.*;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -63,17 +62,17 @@ public class Main_Manager {
                 duration > 0 ? duration : -1
         );
 
-        String banMessage = banManager.getBanMessage(player.getName());
-        Bukkit.getBanList(BanList.Type.NAME).addBan(
-                player.getName(),
-                banMessage,
-                duration > 0 ? new Date(System.currentTimeMillis() + duration * 1000L) : null,
-                null
-        );
+        // String banMessage = banManager.getBanMessage(player.getName());
+        // Bukkit.getBanList(BanList.Type.NAME).addBan(
+        //         player.getName(),
+        //         banMessage,
+        //         duration > 0 ? new Date(System.currentTimeMillis() + duration * 1000L) : null,
+        //         null
+        // );
 
-        if (player.isOnline()) {
-            player.kickPlayer(banMessage);
-        }
+        // if (player.isOnline()) {
+        //     player.kickPlayer(banMessage);
+        // }
     }
 
     public void registerMainCommand() {

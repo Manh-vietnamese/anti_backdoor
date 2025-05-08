@@ -19,9 +19,9 @@ public class OP_Ban implements Listener {
         String playerName = event.getPlayer().getName();
         if (banManager.isBanned(playerName)) {
             String banMessage = banManager.getBanMessage(playerName);
-            // Hủy kết nối ngay lập tức
+            // Huỷ kết nối ngay lập tức
             event.setResult(PlayerLoginEvent.Result.KICK_BANNED);
-            event.setKickMessage(banMessage);
+            event.setKickMessage(banMessage); // Chỉ sử dụng thông báo từ plugin
         }
     }
 }

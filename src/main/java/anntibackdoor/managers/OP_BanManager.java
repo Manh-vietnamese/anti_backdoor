@@ -57,14 +57,14 @@ public class OP_BanManager {
         bansConfig.set("banned_players." + player.getName() + ".ban_time", currentTime);
         bansConfig.set("banned_players." + player.getName() + ".unban_time", unbanTime);
     
-        // Đồng bộ với Bukkit ban list
+        // Đồng bộ với Bukkit ban list (CHỈ CẬP NHẬT LÝ DO TỪ PLUGIN)
         Date expiryDate = (duration > 0) ? new Date(System.currentTimeMillis() + duration * 1000L) : null;
         String banMessage = getBanMessage(player.getName());
         updateBukkitBanEntry(player.getName(), banMessage, expiryDate);
     
-        // Kick người chơi nếu đang online
+        // Kick người chơi nếu đang online (CHỈ SỬ DỤNG THÔNG BÁO TỪ PLUGIN)
         if (player.isOnline()) {
-            player.kickPlayer(banMessage);
+            player.kickPlayer(banMessage); // Sử dụng banMessage đã định dạng
         }
     
         saveBans();

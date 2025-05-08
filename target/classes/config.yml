@@ -1,4 +1,0 @@
-# Có thể chọn "kick" hoặc "ban"
-punishment_type: "ban"
-# Thời gian ban (giây), -1 = vĩnh viễn
-ban_duration: 120

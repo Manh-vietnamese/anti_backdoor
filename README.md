@@ -115,4 +115,9 @@ allowed_ops:
 
 ## 📄 Giấy phép  
 MIT License © 2023.  
+<<<<<<< HEAD
 Phát triển bởi [Your Name] - [GitHub Repository](https://github.com/your-repo)
+=======
+Phát triển bởi [Your Name] - [GitHub Repository](https://github.com/your-repo)  
+```
+>>>>>>> 23267fe0ddcd9af1d49b7a323b6a7fdfdbc8c1ea

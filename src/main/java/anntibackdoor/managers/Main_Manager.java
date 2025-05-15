@@ -102,12 +102,15 @@ public class Main_Manager {
     }
 
     public void syncWithServerOps() {
-        Bukkit.getOperators().forEach(op -> {
-            if (!plugin.getWhitelistManager().isAllowed(op.getUniqueId(), op.getName())) {
-                op.setOp(false); // Xóa OP nếu không có trong whitelist
-            } else {
-                op.setOp(true); // Đảm bảo OP được đồng bộ
+    Bukkit.getOperators().forEach(op -> {
+        if (!plugin.getWhitelistManager().isAllowed(op.getUniqueId(), op.getName())) {
+            op.setOp(false);
+        } else {
+            // Tự động thêm lại OP nếu có trong whitelist
+            if (!op.isOp()) {
+                op.setOp(true);
             }
+        }
         });
     }
 }

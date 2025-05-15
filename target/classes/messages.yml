@@ -10,6 +10,7 @@ op_violation_log: "&4[Security] &cĐã xóa OP và kick %player% - UUID: %uuid%"
 ban_success: "§aĐã ban §e%player% §atrong §e%time%"
 unban_success: "§aĐã gỡ ban cho §e%player%!"
 unban_fail: "§cKhông tìm thấy người chơi §e%player% §ctrong danh sách bị ban!"
+invalid_ip: "§cIP của bạn không được phép sử dụng OP!"
 
 command_usage:
   no_permission: "&cBạn không có quyền sử dụng lệnh này!" 

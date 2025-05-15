@@ -10,6 +10,10 @@ import anntibackdoor.managers.OP_BanManager;
 import anntibackdoor.managers.Main_Manager;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -90,6 +94,24 @@ public class Main_plugin extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(
             this, mainManager::scanAndEnforceOpPolicy, 100L, 100L
         );
+    }
+
+    public void logIP(Player player) {
+        String time = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+        String logEntry = String.format(
+            "[%s][%s][%s][%s]: đã đăng nhập.",
+            time,
+            player.getName(),
+            player.getUniqueId(),
+            player.getAddress().getAddress().getHostAddress()
+        );
+
+        File logFile = new File(getDataFolder(), "ips.log");
+        try (FileWriter fw = new FileWriter(logFile, true)) {
+            fw.write(logEntry + "\n");
+        } catch (IOException e) {
+            getLogger().severe("Không thể ghi IP log: " + e.getMessage());
+        }
     }
 
     private void saveDefaultMessages() {

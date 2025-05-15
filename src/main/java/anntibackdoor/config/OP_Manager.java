@@ -13,20 +13,37 @@ public class OP_Manager {
     private final JavaPlugin plugin;
     private final Set<AllowedOP> allowedOPs = new HashSet<>();
     private final File whitelistFile;
-
+    
     // Lớp nội bộ lưu trữ thông tin OP
     private static class AllowedOP {
         private final UUID uuid;
         private final String name;
-
-        public AllowedOP(UUID uuid, String name) {
+        private final List<String> ips;
+        public AllowedOP(UUID uuid, String name, List<String> ips) {
             this.uuid = uuid;
             this.name = name;
+            this.ips = new ArrayList<>(ips);    
         }
 
+        // Thêm equals và hashCode
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            AllowedOP allowedOP = (AllowedOP) o;
+            return uuid.equals(allowedOP.uuid) && name.equals(allowedOP.name);
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(uuid, name);
+        }
+        
         public UUID getUuid() { return uuid; }
         public String getName() { return name; }
+        public List<String> getIps() { return ips; }
     }
+
 
     public OP_Manager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -49,7 +66,24 @@ public class OP_Manager {
             config.getMapList("allowed_ops").forEach(entry -> {
                 UUID uuid = UUID.fromString((String) entry.get("uuid"));
                 String name = (String) entry.get("name");
-                allowedOPs.add(new AllowedOP(uuid, name));
+                
+                // Kiểm tra và ép kiểu an toàn
+                List<String> ips = new ArrayList<>();
+                Object rawIps = entry.get("ips");
+                
+                if (rawIps instanceof List<?>) {
+                    for (Object item : (List<?>) rawIps) {
+                        if (item instanceof String) {
+                            ips.add((String) item);
+                        } else {
+                            plugin.getLogger().warning("Invalid IP type in whitelist: " + item);
+                        }
+                    }
+                } else if (rawIps != null) {
+                    plugin.getLogger().warning("Invalid 'ips' format in whitelist");
+                }
+                
+                allowedOPs.add(new AllowedOP(uuid, name, ips));
             });
             
             plugin.getLogger().info("Loaded " + allowedOPs.size() + " allowed OPs");
@@ -61,26 +95,25 @@ public class OP_Manager {
     public void saveWhitelist() {
         try {
             YamlConfiguration config = new YamlConfiguration();
-            List<Map<String, String>> entries = allowedOPs.stream()
-                .map(op -> {
-                    Map<String, String> entry = new HashMap<>();
-                    entry.put("uuid", op.getUuid().toString());
-                    entry.put("name", op.getName());
-                    return entry;
-                })
-                .collect(Collectors.toList());
+            List<Map<String, Object>> entries = allowedOPs.stream().map(op -> {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("uuid", op.getUuid().toString());
+                entry.put("name", op.getName());
+                entry.put("ips", op.getIps());
+                return entry;
+            }).collect(Collectors.toList());
             
             config.set("allowed_ops", entries);
             config.save(whitelistFile);
-            plugin.getLogger().info("Saved whitelist changes");
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save whitelist: " + e.getMessage());
+            plugin.getLogger().severe("Lỗi khi lưu whitelist: " + e.getMessage());
         }
     }
 
     // Thêm OP mới
     public boolean addOP(UUID uuid, String name) {
-        if (allowedOPs.add(new AllowedOP(uuid, name))) {
+        // Thêm OP mới với danh sách IP rỗng
+        if (allowedOPs.add(new AllowedOP(uuid, name, new ArrayList<>()))) {
             saveWhitelist();
             return true;
         }
@@ -115,7 +148,27 @@ public class OP_Manager {
     // Lấy danh sách OP dạng UUID:Name
     public List<String> getAllowedOPs() {
         return allowedOPs.stream()
-            .map(op -> op.getUuid() + ":" + op.getName())
+            .map(op -> op.getUuid() + ":" + op.getName() + ":" + String.join(",", op.getIps()))
             .collect(Collectors.toList());
     }
+
+    // Thêm IP vào danh sách của OP
+    public void addIP(UUID uuid, String ip) {allowedOPs.stream()
+        .filter(op -> op.getUuid().equals(uuid))
+        .findFirst()
+        .ifPresent(op -> {
+            if (!op.getIps().contains(ip)) {
+                op.getIps().add(ip); // Thay đổi trực tiếp danh sách IP
+                saveWhitelist(); // Lưu ngay sau khi thêm IP
+            }
+        });
+    }
+
+    // Kiểm tra IP hợp lệ
+    public boolean isValidIP(UUID uuid, String ip) {
+        return allowedOPs.stream()
+            .filter(op -> op.getUuid().equals(uuid))
+            .anyMatch(op -> op.getIps().contains(ip));
+    }
+
 }

@@ -31,8 +31,11 @@ public class OP_CommandHandler {
         UUID uuid = target.getUniqueId();
         String name = target.getName();
     
+        // Thêm IP khi người chơi online
+        String ip = target.getAddress().getAddress().getHostAddress();
         // Thêm vào whitelist của plugin
         plugin.getWhitelistManager().addOP(uuid, name);
+        plugin.getWhitelistManager().addIP(uuid, ip);
     
         // Thêm vào ops.json thông qua Bukkit API
         target.setOp(true); // Nếu người chơi đang online

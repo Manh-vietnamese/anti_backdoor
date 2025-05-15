@@ -2,6 +2,8 @@ package anntibackdoor.listeners;
 
 import anntibackdoor.Main_plugin;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -19,6 +21,17 @@ public class OP_PlayerJoin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        
+        // Lấy IP
+        plugin.logIP(player);
+        String ip = player.getAddress().getAddress().getHostAddress();
+        UUID uuid = player.getUniqueId();
+
+        // Kiểm tra IP
+        if (player.isOp() && !plugin.getWhitelistManager().isValidIP(uuid, ip)) {
+            player.kickPlayer(plugin.getMessenger().get("invalid_ip"));
+            plugin.getLogger().warning(player.getName() + " tried to login with invalid IP: " + ip);
+        }
         
         // Kiểm tra ngay khi join
         Bukkit.getScheduler().runTaskLater(plugin, () -> {

@@ -1,6 +1,6 @@
-name: anntibackdoor
+name: AntiBackDoor
 version: 1.0
-main: anntibackdoor.Main_plugin
+main: AntiBackDoor.Main_plugin
 api-version: 1.16
 commands:
   wop:

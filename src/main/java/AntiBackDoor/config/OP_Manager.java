@@ -170,5 +170,12 @@ public class OP_Manager {
             .filter(op -> op.getUuid().equals(uuid))
             .anyMatch(op -> op.getIps().contains(ip));
     }
-
+    
+    public List<String> getIPs(UUID uuid) {
+        return allowedOPs.stream()
+            .filter(op -> op.getUuid().equals(uuid))
+            .findFirst()
+            .map(AllowedOP::getIps)
+            .orElse(Collections.emptyList());
+    }
 }

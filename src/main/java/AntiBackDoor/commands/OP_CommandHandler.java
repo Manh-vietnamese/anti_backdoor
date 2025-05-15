@@ -54,12 +54,16 @@ public class OP_CommandHandler {
             return;
         }
         
-        sender.sendMessage("§6Danh sách OP hợp lệ:");
+        sender.sendMessage("§6Danh sách OP và IP được phép:");
         ops.forEach(opEntry -> {
             String[] parts = opEntry.split(":");
             String uuid = parts[0];
-            String name = parts.length > 1 ? parts[1] : "Unknown";
-            sender.sendMessage("§7- §e" + name + " §7(UUID: §f" + uuid + "§7)");
+            String name = parts[1];
+            List<String> ips = plugin.getWhitelistManager().getIPs(UUID.fromString(uuid));
+            
+            // Định dạng: Tên (UUID) - IP1, IP2, ...
+            String ipList = ips.isEmpty() ? "§cChưa có IP" : "§a" + String.join("§7, §a", ips);
+            sender.sendMessage("§7- §e" + name + " §7(UUID: §f" + uuid + "§7) - IP: " + ipList);
         });
     }
 

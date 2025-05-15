@@ -36,7 +36,7 @@ public class Messager {
         }
         // Load cấu hình
         messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
-        LOGGER.info("Đã tải messages.yml. Các key có sẵn: " + messagesConfig.getKeys(true));
+        // LOGGER.info("Đã tải messages.yml. Các key có sẵn: " + messagesConfig.getKeys(true));
     }
 
     // Lấy tin nhắn theo key, nếu không tìm thấy thì trả về thông báo lỗi

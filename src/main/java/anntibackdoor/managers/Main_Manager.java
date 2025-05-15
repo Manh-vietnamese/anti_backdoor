@@ -30,49 +30,26 @@ public class Main_Manager {
     public void executeSafetyProtocol(Player player) {
         player.setOp(false);
         player.saveData();
-
-        String punishmentType = plugin.getConfig().getString("punishment_type", "kick").toLowerCase();
-        int banDuration = plugin.getConfig().getInt("ban_duration", -1);
-
+    
+        // Đọc thời gian ban từ config (mặc định -1 nếu không có)
+        int banDuration = plugin.getConfig().getInt("ban_duration", -1); 
+    
+        // Tạo placeholders cho log
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("player", player.getName());
         placeholders.put("uuid", player.getUniqueId().toString());
         placeholders.put("reason", "Sử dụng OP trái phép");
-        placeholders.put("punishment", punishmentType.toUpperCase());
-
-        if ("ban".equals(punishmentType)) {
-            banPlayer(player, banDuration, placeholders);
-        } else if ("kick".equals(punishmentType)) {
-            kickPlayer(player, placeholders);
-        }
-
-        plugin.getLogger().warning(messenger.get("op_violation_log", placeholders));
-    }
-
-    private void kickPlayer(Player player, Map<String, String> placeholders) {
-        String kickMessage = messenger.get("op_violation_kick", placeholders);
-        player.kickPlayer(kickMessage);
-    }
-
-    private void banPlayer(Player player, int duration, Map<String, String> placeholders) {
+    
+        // Luôn thực hiện ban (không còn xử lý kick)
         banManager.banPlayer(
-                player,
-                placeholders.get("reason"),
-                "Hệ thống",
-                duration > 0 ? duration : -1
+            player,
+            placeholders.get("reason"),
+            "Hệ thống AuToBan",
+            banDuration > 0 ? banDuration : -1
         );
-
-        // String banMessage = banManager.getBanMessage(player.getName());
-        // Bukkit.getBanList(BanList.Type.NAME).addBan(
-        //         player.getName(),
-        //         banMessage,
-        //         duration > 0 ? new Date(System.currentTimeMillis() + duration * 1000L) : null,
-        //         null
-        // );
-
-        // if (player.isOnline()) {
-        //     player.kickPlayer(banMessage);
-        // }
+    
+        // Ghi log
+        plugin.getLogger().warning(messenger.get("op_violation_log", placeholders));
     }
 
     public void registerMainCommand() {
@@ -122,5 +99,15 @@ public class Main_Manager {
         if (opCommand != null) {
             opCommand.setExecutor(new OP_Handler(plugin));
         }
+    }
+
+    public void syncWithServerOps() {
+        Bukkit.getOperators().forEach(op -> {
+            if (!plugin.getWhitelistManager().isAllowed(op.getUniqueId(), op.getName())) {
+                op.setOp(false); // Xóa OP nếu không có trong whitelist
+            } else {
+                op.setOp(true); // Đảm bảo OP được đồng bộ
+            }
+        });
     }
 }

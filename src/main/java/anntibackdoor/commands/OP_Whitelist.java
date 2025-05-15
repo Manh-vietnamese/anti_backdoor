@@ -20,7 +20,7 @@ public class OP_Whitelist implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!sender.hasPermission("Sunflower.SP.admin")) {
-            sender.sendMessage(plugin.getMessenger().get("no_permission"));
+            sender.sendMessage(plugin.getMessenger().get("command_usage.no_permission"));
             return true;
         }
 
@@ -61,13 +61,13 @@ public class OP_Whitelist implements CommandExecutor {
 
             case "unban":
                 if (args.length < 2) {
-                    sender.sendMessage(plugin.getMessenger().get("wop_unban_usage"));
+                    sender.sendMessage(plugin.getMessenger().get("command_usage"));
                     return false;
                 }
                 return handler.handleUnban(sender, args);
 
             default:
-                sender.sendMessage(plugin.getMessenger().get("invalid_command"));
+                sender.sendMessage(plugin.getMessenger().get("command_usage.invalid_command"));
                 return true;
         }
     }

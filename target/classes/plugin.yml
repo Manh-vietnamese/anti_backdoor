@@ -1,0 +1,9 @@
+name: anntibackdoor
+version: 1.0
+main: anntibackdoor.Main_plugin
+api-version: 1.16
+commands:
+  wop:
+    description: Quản lý OP whitelist
+    usage: /wop <add|remove|reload|list|ban|unban>
+    permission: Sunflower.SP.admin

@@ -27,8 +27,18 @@ public class OP_CommandHandler {
             sender.sendMessage(plugin.getMessenger().get("player_not_online"));
             return true;
         }
-        plugin.getWhitelistManager().addOP(target.getUniqueId(), target.getName());
-        sender.sendMessage("§aĐã thêm " + target.getName() + " vào whitelist OP!");
+    
+        UUID uuid = target.getUniqueId();
+        String name = target.getName();
+    
+        // Thêm vào whitelist của plugin
+        plugin.getWhitelistManager().addOP(uuid, name);
+    
+        // Thêm vào ops.json thông qua Bukkit API
+        target.setOp(true); // Nếu người chơi đang online
+        Bukkit.getOfflinePlayer(uuid).setOp(true); // Đảm bảo cả offline
+    
+        sender.sendMessage("§aĐã thêm " + name + " vào whitelist OP và cấp quyền OP!");
         return true;
     }
 
@@ -88,7 +98,7 @@ public class OP_CommandHandler {
     // phương thức xử lý UnBan
     public boolean handleUnban(CommandSender sender, String[] args) {
         if (args.length != 2) { // Kiểm tra args phải có 2 phần tử: "unban" và "tên người chơi"
-            sender.sendMessage(plugin.getMessenger().get("wop_unban_usage"));
+            sender.sendMessage(plugin.getMessenger().get("command_usage"));
             return false;
         }
     
@@ -98,11 +108,11 @@ public class OP_CommandHandler {
         if (banManager.unbanPlayer(playerName)) {
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("player", playerName);
-            sender.sendMessage(plugin.getMessenger().get("wop_unban_success", placeholders));
+            sender.sendMessage(plugin.getMessenger().get("unban_success", placeholders));
         } else {
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("player", playerName);
-            sender.sendMessage(plugin.getMessenger().get("wop_unban_fail", placeholders));
+            sender.sendMessage(plugin.getMessenger().get("unban_fail", placeholders));
         }
     
         return true;
@@ -142,7 +152,7 @@ public class OP_CommandHandler {
         placeholders.put("player", targetName);
         placeholders.put("time", formatDuration(duration));
         placeholders.put("reason", reason); // <-- Thêm placeholder mới
-        sender.sendMessage(plugin.getMessenger().get("wop_ban_success", placeholders));
+        sender.sendMessage(plugin.getMessenger().get("ban_success", placeholders));
     
         return true;
     }

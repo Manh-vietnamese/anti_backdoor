@@ -1,7 +1,6 @@
 package AntiBackDoor.listeners;
 
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -33,21 +32,19 @@ public class OP_PlayerJoin implements Listener {
             plugin.getLogger().warning(player.getName() + " tried to login with invalid IP: " + ip);
         }
         
-        // Kiểm tra ngay khi join
+        // Kiểm tra lại trạng thái ban khi join
+        plugin.getBanManager().loadBans();
+        
+        if (plugin.getBanManager().isBanned(player.getName())) {
+            player.kickPlayer(plugin.getBanManager().getBanMessage(player.getName()));
+            return;
+        }
+        
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (player.isOp()) {
-                if (!plugin.getWhitelistManager().isAllowed(player.getUniqueId(), player.getName())) {
-                    plugin.executeSafetyProtocol(player);
-                    
-                    // Phòng trường hợp bypass kick
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        if (player.isOnline()) {
-                            player.setOp(false);
-                        }
-                    });
-                }
+            if (player.isOp() && !plugin.getWhitelistManager().isAllowed(player.getUniqueId(), player.getName())) {
+                plugin.executeSafetyProtocol(player);
             }
-        }, 40L); // Delay 2 giây để đảm bảo dữ liệu đã load xong
+        }, 40L);
 
         // Nếu người chơi bị xóa khỏi whitelist nhưng vẫn có OP
         if (player.isOp() && !plugin.getWhitelistManager().isAllowed(player.getUniqueId(), player.getName())) {

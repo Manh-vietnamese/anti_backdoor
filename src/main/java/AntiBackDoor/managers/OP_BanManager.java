@@ -9,10 +9,9 @@ import java.text.SimpleDateFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.BanList;
 import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import AntiBackDoor.Main_plugin;
-
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class OP_BanManager {
     private final Main_plugin plugin;
@@ -70,14 +69,6 @@ public class OP_BanManager {
     
         saveBans();
     }
-
-    // private Map<String, String> createBanPlaceholders(String reason, String bannedBy, long duration) {
-    //     Map<String, String> placeholders = new HashMap<>();
-    //     placeholders.put("reason", reason);
-    //     placeholders.put("admin", bannedBy);
-    //     placeholders.put("time", formatTime(duration > 0 ? (Instant.now().getEpochSecond() + duration) : -1));
-    //     return placeholders;
-    // }
 
     public boolean isBanned(String playerName) {
         if (!bansConfig.contains("banned_players." + playerName)) {
@@ -140,15 +131,25 @@ public class OP_BanManager {
     }
 
     public void checkExpiredBans() {
-        // Kiểm tra xem "banned_players" có tồn tại không
-        if (bansConfig.getConfigurationSection("banned_players") == null) {
-            return; // Không có dữ liệu, thoát sớm
-        }
+        // Đảm bảo load lại dữ liệu bans trước khi kiểm tra
+        loadBans();
         
-        // Lặp qua các key nếu tồn tại
+        if (bansConfig.getConfigurationSection("banned_players") == null) return;
+        
         for (String playerName : bansConfig.getConfigurationSection("banned_players").getKeys(false)) {
-            isBanned(playerName); // Tự động xóa nếu hết hạn
+            if (!isBanned(playerName)) {
+                // Xóa khỏi file nếu hết hạn ban
+                bansConfig.set("banned_players." + playerName, null);
+            }
         }
+        saveBans();
+        
+        // Đồng bộ với Bukkit ban list
+        Bukkit.getBanList(BanList.Type.NAME).getBanEntries().forEach(banEntry -> {
+            if (!isBanned(banEntry.getTarget())) {
+                Bukkit.getBanList(BanList.Type.NAME).pardon(banEntry.getTarget());
+            }
+        });
     }
 
     public void updateBukkitBanEntry(String playerName, String reason, Date expiryDate) {

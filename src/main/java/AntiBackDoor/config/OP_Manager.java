@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class OP_Manager {
     private final JavaPlugin plugin;

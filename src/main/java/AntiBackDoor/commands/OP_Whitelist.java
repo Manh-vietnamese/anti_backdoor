@@ -1,7 +1,6 @@
 package AntiBackDoor.commands;
 
 import java.util.Arrays;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,13 +18,13 @@ public class OP_Whitelist implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!sender.hasPermission("Sunflower.SP.admin")) {
-            sender.sendMessage(plugin.getMessenger().get("command_usage.no_permission"));
+        if (!sender.hasPermission("antibackdoor.Admin")) {
+            sender.sendMessage(plugin.getMessenger().get("command.error.no_permission"));
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(plugin.getMessenger().get("command_usage"));
+            sender.sendMessage(plugin.getMessenger().get("command.usage"));
             return true;
         }
 
@@ -37,7 +36,7 @@ public class OP_Whitelist implements CommandExecutor {
 
             case "remove":
                 if (args.length < 2) {
-                    sender.sendMessage(plugin.getMessenger().get("command_usage"));
+                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
                     return false;
                 }
                 return handler.handleRemove(sender, args[1]); // Đúng vì handleRemove trả về boolean
@@ -51,7 +50,7 @@ public class OP_Whitelist implements CommandExecutor {
 
             case "ban":
                 if (args.length < 4) {
-                    sender.sendMessage(plugin.getMessenger().get("wop_ban_usage"));
+                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
                     return false;
                 }
                 String targetName = args[1];
@@ -61,13 +60,13 @@ public class OP_Whitelist implements CommandExecutor {
 
             case "unban":
                 if (args.length < 2) {
-                    sender.sendMessage(plugin.getMessenger().get("command_usage"));
+                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
                     return false;
                 }
                 return handler.handleUnban(sender, args);
 
             default:
-                sender.sendMessage(plugin.getMessenger().get("command_usage.invalid_command"));
+                sender.sendMessage(plugin.getMessenger().get("command.error.invalid_command"));
                 return true;
         }
     }

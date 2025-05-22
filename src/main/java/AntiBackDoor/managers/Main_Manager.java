@@ -5,14 +5,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.command.PluginCommand;
 
 import AntiBackDoor.Main_plugin;
 import AntiBackDoor.Messenger.Messager;
 import AntiBackDoor.commands.OP_Handler;
 import AntiBackDoor.config.OP_Manager;
 import AntiBackDoor.listeners.OP_PlayerJoin;
-
-import org.bukkit.command.PluginCommand;
 
 public class Main_Manager {
     private final Main_plugin plugin;
@@ -53,24 +52,6 @@ public class Main_Manager {
         plugin.getLogger().warning(messenger.get("op_violation_log", placeholders));
     }
 
-    public void registerMainCommand() {
-        PluginCommand mainCommand = plugin.getCommand("supportserver");
-        if (mainCommand != null) {
-            mainCommand.setExecutor((sender, cmd, label, args) -> {
-                if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-                    if (!sender.hasPermission("Sunflower.SP.admin")) {
-                        sender.sendMessage(messenger.get("command-no-permission"));
-                        return true;
-                    }
-                    plugin.fullReload();
-                    sender.sendMessage(messenger.get("full-reload-success"));
-                    return true;
-                }
-                return false;
-            });
-        }
-    }
-
     public void reloadListeners() {
         HandlerList.unregisterAll(plugin);
         plugin.getServer().getPluginManager().registerEvents(new OP_PlayerJoin(plugin), plugin);
@@ -108,10 +89,7 @@ public class Main_Manager {
             op.setOp(false);
         } else {
             // Tự động thêm lại OP nếu có trong whitelist
-            if (!op.isOp()) {
-                op.setOp(true);
-            }
-        }
-        });
+            if (!op.isOp()) {op.setOp(true);}
+        }});
     }
 }

@@ -1,15 +1,13 @@
 package AntiBackDoor.commands;
 
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import AntiBackDoor.Main_plugin;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import AntiBackDoor.Main_plugin;
 
 public class OP_Handler implements CommandExecutor {
     private final Main_plugin plugin;
@@ -25,7 +23,7 @@ public class OP_Handler implements CommandExecutor {
         // Sử dụng UUID thay vì tên
         Player targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            sender.sendMessage(plugin.getMessenger().get("player_not_online"));
+            sender.sendMessage(plugin.getMessenger().get("command.error.player_offline"));
             return true;
         }
 

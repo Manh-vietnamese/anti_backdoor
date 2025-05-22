@@ -1,0 +1,16 @@
+AntiBackDoor\config\OP_Manager$AllowedOP.class
+AntiBackDoor\commands\OP_Whitelist.class
+AntiBackDoor\Main_plugin.class
+AntiBackDoor\listeners\CREATE_CommandBlocker.class
+AntiBackDoor\listeners\OP_BanCheck.class
+AntiBackDoor\commands\OP_Handler.class
+AntiBackDoor\listeners\CREATE_MovementRestrictor.class
+AntiBackDoor\listeners\OP_Ban.class
+AntiBackDoor\managers\Main_Manager.class
+AntiBackDoor\Messenger\Messager.class
+AntiBackDoor\listeners\OP_PlayerJoin.class
+AntiBackDoor\listeners\CREATE_InteractListener.class
+AntiBackDoor\managers\OP_BanManager.class
+AntiBackDoor\config\OP_Manager.class
+AntiBackDoor\managers\CREATE_WarningManager.class
+AntiBackDoor\commands\OP_CommandHandler.class

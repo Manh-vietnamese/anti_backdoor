@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import AntiBackDoor.Main_plugin;
 
 public class OP_Handler implements CommandExecutor {
-    private final Main_plugin plugin;
 
     public OP_Handler(Main_plugin plugin) {
         this.plugin = plugin;

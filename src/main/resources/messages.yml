@@ -44,6 +44,11 @@ create_abuse:
   interact: "&cBạn không được phép tương tác trong chế độ Create!"
   kick: "&cBạn đã bị kick khi lạm dụng chế độ Create!"
 
+### THÔNG BÁO ANTI GIVE ITEM ###
+anti_give_item:
+  warning: "&cBạn không được phép thay đổi vật phẩm trong chế độ Creative!"
+  drop_warning: "&cBạn không được phép vứt đồ trong chế độ Creative!"
+
 ### LỆNH & THÔNG BÁO LỖI ###
 command:
   usage: |-

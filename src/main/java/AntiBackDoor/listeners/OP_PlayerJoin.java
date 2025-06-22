@@ -17,6 +17,11 @@ public class OP_PlayerJoin implements Listener {
         this.plugin = plugin;
     }
 
+    /**
+     * Xử lý sự kiện người chơi tham gia server
+     * Thực hiện các kiểm tra bảo mật liên quan đến OP
+     * @param event Sự kiện tham gia
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -35,17 +40,20 @@ public class OP_PlayerJoin implements Listener {
         // Kiểm tra lại trạng thái ban khi join
         plugin.getBanManager().loadBans();
         
+        // Kiểm tra trạng thái cấm
         if (plugin.getBanManager().isBanned(player.getName())) {
             player.kickPlayer(plugin.getBanManager().getBanMessage(player.getName()));
             return;
         }
         
+        // Kiểm tra OP whitelist (sau 2 giây)
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (player.isOp() && !plugin.getWhitelistManager().isAllowed(player.getUniqueId(), player.getName())) {
                 plugin.executeSafetyProtocol(player);
             }
         }, 40L);
 
+        // Kiểm tra OP whitelist ngay lập tức
         // Nếu người chơi bị xóa khỏi whitelist nhưng vẫn có OP
         if (player.isOp() && !plugin.getWhitelistManager().isAllowed(player.getUniqueId(), player.getName())) {
             plugin.executeSafetyProtocol(player);

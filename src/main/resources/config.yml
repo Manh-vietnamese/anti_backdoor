@@ -1,6 +1,18 @@
 # Thời gian ban (giây), -1 = vĩnh viễn
 ban_duration: 120
 
+# Chống Give Item trong Creative
+Anti_Give_Item:
+  enabled: true
+  # Tự động dọn item gần người chơi
+  cleanup_items: true
+  # Bán kính dọn dẹp (block)
+  cleanup_radius: 5
+  # thời gian delay (20 ticks = 1s)
+  cleanup_delay: 5 # 0.25s
+  # Kiểm tra ngay khi drop item
+  instant_check_on_drop: true 
+
 # Cấu hình chống lạm dụng chế độ Create
 Anti_Create_Abuse:
   # Bật/Tắt

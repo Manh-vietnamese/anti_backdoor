@@ -1,4 +1,4 @@
-package AntiBackDoor.config;
+package AntiBackDoor.Managers;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,6 @@ public class OP_Manager {
         public String getName() { return name; }
         public List<String> getIps() { return ips; }
     }
-
 
     public OP_Manager(JavaPlugin plugin) {
         this.plugin = plugin;

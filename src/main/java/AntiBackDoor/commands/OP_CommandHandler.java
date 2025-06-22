@@ -1,4 +1,4 @@
-package AntiBackDoor.commands;
+package AntiBackDoor.Commands;
 
 import java.util.*;
 import org.bukkit.Bukkit;
@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
 
 import AntiBackDoor.Main_plugin;
-import AntiBackDoor.managers.OP_BanManager;
+import AntiBackDoor.Managers.OP_BanManager;
 
 public class OP_CommandHandler {
     public final Main_plugin plugin;
@@ -79,24 +79,6 @@ public class OP_CommandHandler {
     // phương thức xử lý remove OP
     public boolean handleRemove(CommandSender sender, String targetName) {
         UUID targetUUID = findUUID(targetName);
-    
-        // Player onlinePlayer = Bukkit.getPlayer(targetName);
-        // if (onlinePlayer != null) {
-        //     targetUUID = onlinePlayer.getUniqueId();
-        // } else {
-        //     // Duyệt qua danh sách OP dạng UUID:Name
-        //     for (String opEntry : plugin.getWhitelistManager().getAllowedOPs()) {
-        //         String[] parts = opEntry.split(":");
-        //         if (parts.length > 1 && parts[1].equalsIgnoreCase(targetName)) {
-        //             try {
-        //                 targetUUID = UUID.fromString(parts[0]);
-        //                 break;
-        //             } catch (IllegalArgumentException e) {
-        //                 plugin.getLogger().warning("Invalid UUID format: " + parts[0]);
-        //             }
-        //         }
-        //     }
-        // }
 
         if (targetUUID == null) {
             Map<String, String> params = new HashMap<>();

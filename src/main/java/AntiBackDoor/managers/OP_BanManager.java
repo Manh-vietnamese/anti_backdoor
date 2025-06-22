@@ -1,4 +1,4 @@
-package AntiBackDoor.managers;
+package AntiBackDoor.Managers;
 
 import java.util.*;
 import java.io.File;

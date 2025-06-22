@@ -1,0 +1,44 @@
+thêm tính năng Anti give item creative
+Cách hoạt động: 
+    1. Mỗi 5s quét chế độ chơi của tất player trong sever. 
+    2. Nếu phát hiện ai đang trong chế độ creative:
+        2.1. Nếu chưa có file <uuid>.json.
+        2.2. Tự động tạo file <uuid>.json chứa:
+            2.2.1. Vị trí các item.
+            2.2.2. Số lượng item.
+            2.2.3. Giáp đang mặc, enchant của giáp (nếu có).
+            2.2.4. Item tay trái.
+            2.2.5. Enchant của các món đồ.
+        2.3. Lưu phai dưới dạng file json.
+        2.4. Với tên là file <uuid>.json.
+        File sẽ có dạng như sau
+            {
+                Uuid: <uuid_player>;
+                player_name: <tên player đó>;
+                Item:
+            }
+    3. Sau khi đã tạo file xong, mỗi năm giây quét lại toàn bộ Inventory của người chơi đó.
+    4. nếu phát hiện có một item mới nào. Hoặc thay đổi vị trí của tất cả các item. 
+    5. Thì sẽ phục hồi lại Tất cả các item đã lưu, đưa ra thông báo Messenger. 
+    6. Khi người chơi đói chuyển sang chế độ sinh tồn thì xóa file đó đi
+
+    chờ đưa phần này vào trong Main_manager.java sau đó gọi sang Main_plugin.java
+    {
+        if (!plugin.getConfig().getBoolean("Anti_Give_Item.enabled", true)) return;
+        
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getGameMode() == GameMode.CREATIVE && 
+                antiGiveItemManager.hasSavedInventory(player)) {
+                
+                // TODO: Thêm logic so sánh inventory ở đây
+                // Tạm thời phục hồi luôn
+                antiGiveItemManager.restoreCreativeInventory(player);
+                player.sendMessage(plugin.getMessenger().get("anti_give_item.warning"));
+                }
+            }
+        }, 100L, 100L); // 5s = 100 ticks
+    }
+
+đã sửa bug, chờ test lại toàn bộ tính năng.
+
+gộp các file anti creative, anti give item, thêm command cho code, sửa file Messenger khi reload. chưa test lệnh reload

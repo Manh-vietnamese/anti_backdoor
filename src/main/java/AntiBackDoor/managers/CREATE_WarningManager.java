@@ -1,4 +1,4 @@
-package AntiBackDoor.managers;
+package AntiBackDoor.Managers;
 
 import org.bukkit.entity.Player;
 import org.bukkit.GameMode;
@@ -23,6 +23,19 @@ public class CREATE_WarningManager {
         // Kiểm tra nếu vượt quá số cảnh báo
         int maxWarnings = plugin.getConfig().getInt("Anti_Create_Abuse.warnings", 10);
         if (current + 1 >= maxWarnings) {
+            // Kiểm tra và phục hồi inventory trước khi kick
+            if (player.getGameMode() == GameMode.CREATIVE && 
+                plugin.getAntiGiveItemManager().hasSavedInventory(player)) {
+                
+                // So sánh inventory hiện tại với bản lưu
+                if (plugin.getAntiGiveItemManager().isInventoryChanged(player)) {
+                    plugin.getAntiGiveItemManager().restoreCreativeInventory(player);
+                }
+                
+                // Dọn dẹp item xung quanh
+                plugin.getMainManager().cleanupNearbyItems(player);
+            }
+            
             resetWarning(player);
             player.setGameMode(GameMode.ADVENTURE);
             player.kickPlayer(plugin.getMessenger().get("create_abuse.kick"));

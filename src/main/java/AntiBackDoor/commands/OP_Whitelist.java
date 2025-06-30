@@ -6,13 +6,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
 public class OP_Whitelist implements CommandExecutor {
-    private final Main_plugin plugin;
     private final OP_CommandHandler handler;
 
     public OP_Whitelist(Main_plugin plugin) {
-        this.plugin = plugin;
         this.handler = new OP_CommandHandler(plugin);
     }
 
@@ -28,13 +27,13 @@ public class OP_Whitelist implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         // Kiểm tra quyền ADMIN
         if (!sender.hasPermission("antibackdoor.Admin")) {
-            sender.sendMessage(plugin.getMessenger().get("command.error.no_permission"));
+            Messager.send(sender,"command.error.no_permission");
             return true;
         }
 
         // Hiển thị hướng dẫn nếu thiếu tham số
         if (args.length < 1) {
-            sender.sendMessage(plugin.getMessenger().get("command.usage"));
+            Messager.send(sender,"command.usage");
             return true;
         }
 
@@ -49,7 +48,7 @@ public class OP_Whitelist implements CommandExecutor {
             // Xóa người chơi khỏi whitelist OP
             case "remove":
                 if (args.length < 2) {
-                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
+                    Messager.send(sender,"command.usage");
                     return false;
                 }
                 return handler.handleRemove(sender, args[1]); // Đúng vì handleRemove trả về boolean
@@ -66,7 +65,7 @@ public class OP_Whitelist implements CommandExecutor {
             // ban người chơi
             case "ban":
                 if (args.length < 4) {
-                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
+                    Messager.send(sender,"command.usage");
                     return false;
                 }
 
@@ -78,14 +77,14 @@ public class OP_Whitelist implements CommandExecutor {
             // Gỡ ban người chơi
             case "unban":
                 if (args.length < 2) {
-                    sender.sendMessage(plugin.getMessenger().get("command.usage"));
+                    Messager.send(sender,"command.usage");
                     return false;
                 }
                 return handler.handleUnban(sender, args);
 
             // Xử lý lệnh không hợp lệ
             default:
-                sender.sendMessage(plugin.getMessenger().get("command.error.invalid_command"));
+                Messager.send(sender,"command.error.invalid_command");
                 return true;
         }
     }

@@ -12,13 +12,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
-public class OP_BanManager {
+public class Managers_OP_Ban {
     private final Main_plugin plugin;
     private final File bansFile;
     private YamlConfiguration bansConfig;
 
-    public OP_BanManager(Main_plugin plugin) {
+    public Managers_OP_Ban(Main_plugin plugin) {
         this.plugin = plugin;
         this.bansFile = new File(plugin.getDataFolder(), "bans.yml");
         loadBans();
@@ -85,26 +86,26 @@ public class OP_BanManager {
         return true;
     }   
 
-    public String getBanMessage(String playerName) {
-        if (!isBanned(playerName)) return null;
+public String getBanMessage(String playerName) {
+    if (!isBanned(playerName)) return null;
+
+    long unbanTime = bansConfig.getLong("banned_players." + playerName + ".unban_time");
+    String reason = bansConfig.getString("banned_players." + playerName + ".reason", "Không rõ lý do");
+    String bannedBy = bansConfig.getString("banned_players." + playerName + ".banned_by", "Hệ thống");
+
+    Map<String, String> args = new HashMap<>();
+    args.put("reason", reason);
+    args.put("admin", bannedBy);
     
-        long unbanTime = bansConfig.getLong("banned_players." + playerName + ".unban_time");
-        String reason = bansConfig.getString("banned_players." + playerName + ".reason", "Không rõ lý do");
-        String bannedBy = bansConfig.getString("banned_players." + playerName + ".banned_by", "Hệ thống");
-    
-        Map<String, String> args = new HashMap<>();
-        args.put("reason", reason);
-        args.put("admin", bannedBy);
-    
-        // Thêm thời điểm unban vào thông báo
-        args.put("time", formatTime(unbanTime));
-    
-        if (unbanTime == -1) {
-            return plugin.getMessenger().get("ban.permanent", args);
-        } else {
-            return plugin.getMessenger().get("ban.temporary", args);
-        }
+    // Thêm thời điểm unban vào thông báo
+    args.put("time", formatTime(unbanTime));
+
+    if (unbanTime == -1) {
+        return Messager.get("ban.permanent", args);
+    } else {
+        return Messager.get("ban.temporary", args);
     }
+}
     
     public boolean unbanPlayer(String playerName) {
         if (!isBanned(playerName)) return false;

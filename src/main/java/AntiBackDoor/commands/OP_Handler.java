@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
 public class OP_Handler implements CommandExecutor {
     private final Main_plugin plugin;
@@ -31,7 +32,8 @@ public class OP_Handler implements CommandExecutor {
         // Sử dụng UUID thay vì tên
         Player targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            sender.sendMessage(plugin.getMessenger().get("command.error.player_offline"));
+            // Sử dụng Messager trực tiếp
+            Messager.get("command.error.player_offline");
             return true;
         }
 
@@ -40,7 +42,8 @@ public class OP_Handler implements CommandExecutor {
 
         // Kiểm tra whitelist
         if (!plugin.getWhitelistManager().isAllowed(uuid, name)) {
-            sender.sendMessage(plugin.getMessenger().get("player_not_op"));
+            // Sử dụng Messager trực tiếp
+            Messager.get("player_not_op");
             return true;
         }
 

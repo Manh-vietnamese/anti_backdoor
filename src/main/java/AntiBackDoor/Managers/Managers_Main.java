@@ -6,20 +6,21 @@ import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 
 import AntiBackDoor.Main_plugin;
 import AntiBackDoor.Commands.OP_Handler;
 import AntiBackDoor.Messenger.Messager;
-import AntiBackDoor.listeners.OP_PlayerJoin;
+import AntiBackDoor.listeners.Listener_PlayerJoin;
 
-public class Main_Manager {
+public class Managers_Main {
     private final Main_plugin plugin;
-    private final OP_Manager whitelistManager;
-    private final OP_BanManager banManager;
+    private final Managers_OP whitelistManager;
+    private final Managers_OP_Ban banManager;
     private final Messager messenger;
 
-    public Main_Manager(Main_plugin plugin) {
+    public Managers_Main(Main_plugin plugin) {
         this.plugin = plugin;
         this.whitelistManager = plugin.getWhitelistManager();
         this.banManager = plugin.getBanManager();
@@ -28,12 +29,12 @@ public class Main_Manager {
 
     public Main_plugin getPlugin() {return plugin;}
     public Messager getMessenger() {return messenger;}
-    public OP_BanManager getBanManager() {return banManager;}
-    public OP_Manager getWhitelistManager() {return whitelistManager;}
+    public Managers_OP_Ban getBanManager() {return banManager;}
+    public Managers_OP getWhitelistManager() {return whitelistManager;}
 
     public void reloadListeners() {
         HandlerList.unregisterAll(plugin);
-        plugin.getServer().getPluginManager().registerEvents(new OP_PlayerJoin(plugin), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new Listener_PlayerJoin(plugin), plugin);
     }
 
     public void overrideOpCommand() {
@@ -65,7 +66,7 @@ public class Main_Manager {
         );
     
         // Ghi log
-        plugin.getLogger().warning(messenger.get("op_violation_log", placeholders));
+        plugin.getLogger().warning(Messager.get("op_violation_log", placeholders));
     }
 
     public void scanAndEnforceOpPolicy() {
@@ -98,7 +99,7 @@ public class Main_Manager {
         });
     }
 
-    public void scanCreativeInventories() {
+    public void scanCreativeInventories(CommandSender sender) {
         if (!plugin.getConfig().getBoolean("Anti_Give_Item.enabled", true)) return;
         
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -123,7 +124,7 @@ public class Main_Manager {
                 else {
                     if (plugin.getAntiGiveItemManager().isInventoryChanged(player)) {
                         plugin.getAntiGiveItemManager().restoreCreativeInventory(player);
-                        player.sendMessage(plugin.getMessenger().get("anti_give_item.warning"));
+                        Messager.send(sender,"anti_give_item.warning");
                         
                         // Thêm cảnh báo
                         plugin.getWarningManager().addWarning(player);

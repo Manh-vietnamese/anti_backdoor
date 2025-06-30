@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class OP_Manager {
+public class Managers_OP {
     private final JavaPlugin plugin;
     private final Set<AllowedOP> allowedOPs = new HashSet<>();
     private final File whitelistFile;
@@ -44,7 +44,7 @@ public class OP_Manager {
         public List<String> getIps() { return ips; }
     }
 
-    public OP_Manager(JavaPlugin plugin) {
+    public Managers_OP(JavaPlugin plugin) {
         this.plugin = plugin;
         this.whitelistFile = new File(plugin.getDataFolder(), "whitelist_op.yml");
         initializeFile();

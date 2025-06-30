@@ -10,11 +10,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
-public class ANTI_Create_Listener implements Listener {
+public class Listener_ANTI_Create implements Listener {
     private final Main_plugin plugin;
 
-    public ANTI_Create_Listener(Main_plugin plugin) {
+    public Listener_ANTI_Create(Main_plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -35,7 +36,7 @@ public class ANTI_Create_Listener implements Listener {
         if (isInCreateMode(player) && !hasCreatePermission(player)) {
             // Hủy lệnh và thông báo cho người chơi
             e.setCancelled(true);
-            player.sendMessage(plugin.getMessenger().get("create_abuse.command"));
+            Messager.send(player, "create_abuse.command");
 
             // Ghi nhận cảnh báo
             plugin.getWarningManager().addWarning(player);
@@ -54,7 +55,7 @@ public class ANTI_Create_Listener implements Listener {
         // Chặn tương tác nếu không có quyền
         if (isInCreateMode(player) && !hasCreatePermission(player)) {
             e.setCancelled(true);
-            player.sendMessage(plugin.getMessenger().get("create_abuse.interact"));
+            Messager.send(player,"create_abuse.interact");
 
             // Ghi nhận cảnh báo
             plugin.getWarningManager().addWarning(player);
@@ -81,7 +82,7 @@ public class ANTI_Create_Listener implements Listener {
             if (to != null && to.distanceSquared(from) > 0.0001) {
                 // Đưa người chơi về vị trí cũ
                 e.setTo(from);
-                player.sendMessage(plugin.getMessenger().get("create_abuse.movement"));
+                Messager.send(player,"create_abuse.movement");
 
                 // Ghi nhận cảnh báo
                 plugin.getWarningManager().addWarning(player);

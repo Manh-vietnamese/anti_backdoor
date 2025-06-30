@@ -9,11 +9,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
-public class OP_PlayerJoin implements Listener {
+public class Listener_PlayerJoin implements Listener {
     private final Main_plugin plugin;
 
-    public OP_PlayerJoin(Main_plugin plugin) {
+    public Listener_PlayerJoin(Main_plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -33,7 +34,7 @@ public class OP_PlayerJoin implements Listener {
 
         // Kiểm tra IP
         if (player.isOp() && !plugin.getWhitelistManager().isValidIP(uuid, ip)) {
-            player.kickPlayer(plugin.getMessenger().get("invalid_ip"));
+            player.kickPlayer(Messager.get("invalid_ip"));
             plugin.getLogger().warning(player.getName() + " tried to login with invalid IP: " + ip);
         }
         

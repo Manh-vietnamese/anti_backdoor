@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
 
 import AntiBackDoor.Main_plugin;
-import AntiBackDoor.Managers.OP_BanManager;
+import AntiBackDoor.Managers.Managers_OP_Ban;
+import AntiBackDoor.Messenger.Messager;
 
 public class OP_CommandHandler {
     public final Main_plugin plugin;
@@ -18,12 +19,12 @@ public class OP_CommandHandler {
     // phương thức xử lý ADD OP
     public boolean handleAdd(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(plugin.getMessenger().get("command.usage"));
+            Messager.send(sender,"command.usage");
             return false;
         }
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            sender.sendMessage(plugin.getMessenger().get("command.error.player_offline"));
+            Messager.send(sender,"command.error.player_offline");
             return true;
         }
     
@@ -43,7 +44,7 @@ public class OP_CommandHandler {
         // Sử dụng Messager với placeholder
         Map<String, String> params = new HashMap<>();
         params.put("player", name);
-        sender.sendMessage(plugin.getMessenger().get("op_add_success", params));
+        Messager.send(sender,"op_add_success", params);
         return true;
     }
 
@@ -51,28 +52,28 @@ public class OP_CommandHandler {
     public void listAllowedOps(CommandSender sender) {
         List<String> ops = plugin.getWhitelistManager().getAllowedOPs();
         if (ops.isEmpty()) {
-            sender.sendMessage(plugin.getMessenger().get("op_list.empty"));
+            Messager.send(sender, "op_list.empty");
             return;
         }
         
-        sender.sendMessage(plugin.getMessenger().get("op_list.header"));    
+        Messager.send(sender, "op_list.header");
         ops.forEach(opEntry -> {
             String[] parts = opEntry.split(":");
             String uuid = parts[0];
             String name = parts[1];
             List<String> ips = plugin.getWhitelistManager().getIPs(UUID.fromString(uuid));
-            
-            // Định dạng: Tên (UUID) - IP1, IP2, ...
-            // String ipList = ips.isEmpty() ? "§cChưa có IP" : "§a" + String.join("§7, §a", ips);
-            // sender.sendMessage("§7- §e" + name + " §7(UUID: §f" + uuid + "§7) - IP: " + ipList);
 
-            // Định dạng placeholder
+            // Định dạng placeholder - SỬA TẠI ĐÂY
             Map<String, String> params = new HashMap<>();
             params.put("player", name);
             params.put("uuid", uuid);
-            params.put("ips", ips.isEmpty()?plugin.getMessenger().get("no_ip_recorded"):String.join(", ", ips));
+            
+            // Sử dụng Messager.get() để lấy nội dung thay vì gửi
+            params.put("ips", ips.isEmpty() 
+                ? Messager.get("no_ip_recorded") 
+                : String.join(", ", ips));
 
-            sender.sendMessage(plugin.getMessenger().get("op_list.entry", params));
+            Messager.send(sender, "op_list.entry", params);
         });
     }
 
@@ -83,26 +84,26 @@ public class OP_CommandHandler {
         if (targetUUID == null) {
             Map<String, String> params = new HashMap<>();
             params.put("player", targetName);
-            sender.sendMessage(plugin.getMessenger().get("player_not_found", params));
+            Messager.send(sender,"player_not_found", params);
             return false; // Trả về false nếu không tìm thấy
         }
     
         plugin.getWhitelistManager().removeOP(targetUUID);
         Map<String, String> params = new HashMap<>();
         params.put("player", targetName);
-        sender.sendMessage(plugin.getMessenger().get("op_remove_success", params));
+        Messager.send(sender,"op_remove_success", params);
         return true; // Trả về true nếu xóa thành công
     }
 
     // phương thức xử lý UnBan
     public boolean handleUnban(CommandSender sender, String[] args) {
         if (args.length != 2) {
-            sender.sendMessage(plugin.getMessenger().get("command.usage"));
+            Messager.send(sender,"command.usage");
             return false;
         }
         
         String playerName = args[1];
-        OP_BanManager banManager = plugin.getBanManager();
+        Managers_OP_Ban banManager = plugin.getBanManager();
         
         if (banManager.unbanPlayer(playerName)) {
             // Reload dữ liệu bans ngay lập tức
@@ -110,9 +111,9 @@ public class OP_CommandHandler {
             
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("player", playerName);
-            sender.sendMessage(plugin.getMessenger().get("unban.success", placeholders));
+            Messager.send(sender,"unban.success", placeholders);
         } else {
-            sender.sendMessage(plugin.getMessenger().get("unban.fail"));
+            Messager.send(sender,"unban.fail");
         }
         return true;
     }
@@ -120,7 +121,7 @@ public class OP_CommandHandler {
     // phương thức xử lý reload
     public boolean handleReload(CommandSender sender) {
         plugin.fullReload();
-        sender.sendMessage(plugin.getMessenger().get("reload_success"));
+        Messager.send(sender,"reload_success");
         return true;
     }
 
@@ -128,13 +129,13 @@ public class OP_CommandHandler {
     public boolean handleBan(CommandSender sender, String targetName, String reason, String timeInput) {
         Player target = Bukkit.getPlayer(targetName);
         if (target == null) {
-            sender.sendMessage(plugin.getMessenger().get("command.error.player_offline"));
+            Messager.send(sender,"command.error.player_offline");
             return true;
         }
     
         long duration = parseBanDuration(timeInput);
         if (duration == -1) {
-            sender.sendMessage(plugin.getMessenger().get("command.error.ban_time"));
+            Messager.send(sender,"command.error.ban_time");
             return false;
         }
     
@@ -151,7 +152,7 @@ public class OP_CommandHandler {
         placeholders.put("player", targetName);
         placeholders.put("time", formatDuration(duration));
         placeholders.put("reason", reason); // <-- Thêm placeholder mới
-        sender.sendMessage(plugin.getMessenger().get("ban.success", placeholders));
+        Messager.send(sender,"ban.success", placeholders);
     
         return true;
     }

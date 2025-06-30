@@ -9,11 +9,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
-public class ANTI_GiveItem_Listener implements Listener {
+public class Listener_ANTI_GiveItem implements Listener {
     private final Main_plugin plugin;
 
-    public ANTI_GiveItem_Listener(Main_plugin plugin) {
+    public Listener_ANTI_GiveItem(Main_plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -85,16 +86,16 @@ public class ANTI_GiveItem_Listener implements Listener {
         Player player = event.getPlayer();
         
         // Cho phép người chơi có quyền bypass tiếp tục thả vật phẩm
-        if (player.hasPermission("antibackdoor.bypass.giveitem")) {
-            return;
-        }
+        // if (player.hasPermission("antibackdoor.bypass.giveitem")) {
+        //     return;
+        // }
         
         // Chỉ xử lý khi người chơi ở chế độ Creative
-        if (player.getGameMode() == GameMode.CREATIVE) {
+        if (player.getGameMode() == org.bukkit.GameMode.CREATIVE) {
             // Hủy sự kiện thả vật phẩm
             event.setCancelled(true);
             // Cảnh báo người chơi
-            player.sendMessage(plugin.getMessenger().get("anti_give_item.drop_warning"));
+            Messager.send(player,"anti_give_item.drop_warning");
             
             // Ghi nhận cảnh báo vào hệ thống
             plugin.getWarningManager().addWarning(player);

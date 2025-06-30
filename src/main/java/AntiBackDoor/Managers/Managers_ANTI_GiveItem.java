@@ -20,18 +20,18 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import AntiBackDoor.Main_plugin;
 
-public class ANTI_GiveItemManager {
+public class Managers_ANTI_GiveItem {
     private final Main_plugin plugin;
-    private final Map<UUID, ANTI_CreativeInventoryData> savedInventories = new HashMap<>();
+    private final Map<UUID, Managers_ANTI_CreativeIVTR> savedInventories = new HashMap<>();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public ANTI_GiveItemManager(Main_plugin plugin) {
+    public Managers_ANTI_GiveItem(Main_plugin plugin) {
         this.plugin = plugin;
     }
 
     public void saveCreativeInventory(Player player) {
         UUID uuid = player.getUniqueId();
-        ANTI_CreativeInventoryData data = new ANTI_CreativeInventoryData(player);
+        Managers_ANTI_CreativeIVTR data = new Managers_ANTI_CreativeIVTR(player);
         savedInventories.put(uuid, data);
         
         // Tạo thư mục nếu chưa tồn tại
@@ -52,7 +52,7 @@ public class ANTI_GiveItemManager {
     }
 
     public void restoreCreativeInventory(Player player) {
-        ANTI_CreativeInventoryData data = savedInventories.get(player.getUniqueId());
+        Managers_ANTI_CreativeIVTR data = savedInventories.get(player.getUniqueId());
         if (data != null) {
             data.applyTo(player);
         }
@@ -71,7 +71,7 @@ public class ANTI_GiveItemManager {
     }
 
     public boolean isInventoryChanged(Player player) {
-        ANTI_CreativeInventoryData saved = savedInventories.get(player.getUniqueId());
+        Managers_ANTI_CreativeIVTR saved = savedInventories.get(player.getUniqueId());
         if (saved == null) return false;
         
         PlayerInventory currentInv = player.getInventory();
@@ -105,7 +105,7 @@ public class ANTI_GiveItemManager {
     }
 
     // Kiểm tra nhanh giáp
-    private boolean checkChangedArmor(PlayerInventory inv, ANTI_CreativeInventoryData saved) {
+    private boolean checkChangedArmor(PlayerInventory inv, Managers_ANTI_CreativeIVTR saved) {
         try {
             Map<String, String> savedArmor = saved.getArmor();
             if (!compareSingleArmor(inv.getHelmet(), savedArmor.get("HELMET"))) return true;
@@ -119,7 +119,7 @@ public class ANTI_GiveItemManager {
     }
 
     // Kiểm tra nhanh hotbar (slot 0-8)
-    private boolean checkChangedHotbar(PlayerInventory inv, ANTI_CreativeInventoryData saved) {
+    private boolean checkChangedHotbar(PlayerInventory inv, Managers_ANTI_CreativeIVTR saved) {
         Map<Integer, String> savedItems = saved.getItems();
         for (int slot = 0; slot < 9; slot++) {
             ItemStack currentItem = inv.getItem(slot);
@@ -146,7 +146,7 @@ public class ANTI_GiveItemManager {
         return itemStackToBase64(current).equals(savedBase64);
     }
     
-    // Chuyển ItemStack thành Base64 (public và static để có thể gọi từ ANTI_CreativeInventoryData)
+    // Chuyển ItemStack thành Base64 (public và static để có thể gọi từ Managers_ANTI_CreativeIVTR)
     public static String itemStackToBase64(ItemStack item) throws IOException {
         if (item == null) {
             return null;
@@ -158,7 +158,7 @@ public class ANTI_GiveItemManager {
         return Base64Coder.encodeLines(outputStream.toByteArray());
     }
 
-    // Chuyển Base64 thành ItemStack (public và static để có thể gọi từ ANTI_CreativeInventoryData)
+    // Chuyển Base64 thành ItemStack (public và static để có thể gọi từ Managers_ANTI_CreativeIVTR)
     public static ItemStack itemStackFromBase64(String data) throws IOException {
         if (data == null || data.isEmpty()) {
             return null;

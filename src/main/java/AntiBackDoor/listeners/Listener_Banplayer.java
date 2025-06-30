@@ -5,12 +5,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import AntiBackDoor.Main_plugin;
-import AntiBackDoor.Managers.OP_BanManager;
+import AntiBackDoor.Managers.Managers_OP_Ban;
 
-public class Ban_player implements Listener {
-    private final OP_BanManager banManager;
+public class Listener_Banplayer implements Listener {
+    private final Managers_OP_Ban banManager;
 
-    public Ban_player(Main_plugin plugin) {
+    public Listener_Banplayer(Main_plugin plugin) {
         this.banManager = plugin.getBanManager();
     }
 
@@ -29,7 +29,7 @@ public class Ban_player implements Listener {
             String banMessage = banManager.getBanMessage(playerName);
             
             // Từ chối đăng nhập và hiển thị thông báo
-            event.setResult(PlayerLoginEvent.Result.KICK_BANNED);
+            event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
             event.setKickMessage(banMessage);
         }
     }

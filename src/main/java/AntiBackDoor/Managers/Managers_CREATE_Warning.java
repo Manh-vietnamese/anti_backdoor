@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import AntiBackDoor.Main_plugin;
+import AntiBackDoor.Messenger.Messager;
 
-public class CREATE_WarningManager {
+public class Managers_CREATE_Warning {
     private final Main_plugin plugin;
     private final HashMap<UUID, Integer> warnings = new HashMap<>();
 
-    public CREATE_WarningManager(Main_plugin plugin) {
+    public Managers_CREATE_Warning(Main_plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -38,7 +39,7 @@ public class CREATE_WarningManager {
             
             resetWarning(player);
             player.setGameMode(GameMode.ADVENTURE);
-            player.kickPlayer(plugin.getMessenger().get("create_abuse.kick"));
+            player.kickPlayer(Messager.get("create_abuse.kick"));
         }
     }
 

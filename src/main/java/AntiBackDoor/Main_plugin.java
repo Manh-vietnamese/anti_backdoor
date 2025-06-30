@@ -1,10 +1,6 @@
 package AntiBackDoor;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,28 +8,35 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import AntiBackDoor.Commands.OP_Whitelist;
-import AntiBackDoor.Messenger.Messager;
-import AntiBackDoor.Managers.Main_Manager;
-import AntiBackDoor.Managers.OP_Manager;
-import AntiBackDoor.Managers.OP_BanManager;
-import AntiBackDoor.Managers.ANTI_GiveItemManager;
-import AntiBackDoor.Managers.CREATE_WarningManager;
 
-import AntiBackDoor.listeners.Ban_player;
-import AntiBackDoor.listeners.Ban_CheckPlayer;
-import AntiBackDoor.listeners.OP_PlayerJoin;
-import AntiBackDoor.listeners.ANTI_Create_Listener;
-import AntiBackDoor.listeners.ANTI_GiveItem_Listener;
+import AntiBackDoor.listeners.Listener_ANTI_Create;
+import AntiBackDoor.listeners.Listener_ANTI_GiveItem;
+import AntiBackDoor.listeners.Listener_Ban_CheckPlayer;
+import AntiBackDoor.listeners.Listener_Banplayer;
+import AntiBackDoor.listeners.Listener_Command_Log;
+import AntiBackDoor.listeners.Listener_PlayerJoin;
+
+import AntiBackDoor.Managers.Managers_ANTI_GiveItem;
+import AntiBackDoor.Managers.Managers_CREATE_Warning;
+import AntiBackDoor.Managers.Managers_Main;
+import AntiBackDoor.Managers.Managers_OP_Ban;
+import AntiBackDoor.Managers.Managers_OP;
+
+import AntiBackDoor.Messenger.Messager;
+import AntiBackDoor.Utils.CommandLogger;
+import AntiBackDoor.Utils.LogManager;
 
 public class Main_plugin extends JavaPlugin {
-    private ANTI_Create_Listener createListener;
-    private ANTI_GiveItemManager antiGiveItemManager;
-    private CREATE_WarningManager create_warningManager;
+    private Listener_ANTI_Create createListener;
+    private Managers_ANTI_GiveItem antiGiveItemManager;
+    private Managers_CREATE_Warning Managers_CREATE_Warning;
+    private Managers_Main mainManager;
+    private Managers_OP_Ban banManager;
+    private Managers_OP whitelistManager;
     private Messager Messenger;
-    private OP_BanManager banManager;
-    private Main_Manager mainManager;
-    private OP_Manager whitelistManager;
-
+    private CommandLogger commandLogger; 
+    private LogManager logManager;
+    
     @Override
     public void onEnable() {
         // 1. Tạo config.yml và messages.yml
@@ -41,37 +44,40 @@ public class Main_plugin extends JavaPlugin {
         saveDefaultMessages();
 
         // 2. Khởi tạo các thành phần
-        whitelistManager = new OP_Manager(this);
+        Messager.init(this);
+        createListener = new Listener_ANTI_Create(this);
+        antiGiveItemManager = new Managers_ANTI_GiveItem(this);
+        banManager = new Managers_OP_Ban(this);
+        whitelistManager = new Managers_OP(this);
         whitelistManager.loadWhitelist();
-        banManager = new OP_BanManager(this);
-        Messenger = new Messager(getDataFolder());
-        antiGiveItemManager = new ANTI_GiveItemManager(this);
-        createListener = new ANTI_Create_Listener(this);
+        commandLogger = new CommandLogger(getDataFolder(), "commands.log");
+        logManager = new LogManager(getDataFolder(), "ips.log");
 
         // 3. Khởi tạo mainManager sau khi các dependency đã sẵn sàng
-        mainManager = new Main_Manager(this);
+        mainManager = new Managers_Main(this);
 
-        // 4. Gọi các phương thức từ Main_Manager
+        // 4. Gọi các phương thức từ Managers_Main
         mainManager.scanAndEnforceOpPolicy();
         mainManager.overrideOpCommand();
 
         // Lưu trữ các listener để hủy đăng ký sau này
-        this.createListener = new ANTI_Create_Listener(this);
-        this.create_warningManager = new CREATE_WarningManager(this);
+        this.createListener = new Listener_ANTI_Create(this);
+        this.Managers_CREATE_Warning = new Managers_CREATE_Warning(this);
         
         // Đăng ký listener
-        Bukkit.getPluginManager().registerEvents(new ANTI_GiveItem_Listener(this), this);
+        Bukkit.getPluginManager().registerEvents(new Listener_ANTI_GiveItem(this), this);
 
         // Lập lịch quét OP và ban hết hạn (1s = 20 ticks)
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, mainManager::scanAndEnforceOpPolicy, 100L, 100L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> banManager.checkExpiredBans(), 20L * 60, 20L * 60);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {mainManager.scanCreativeInventories();}, 20L, 20L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {mainManager.scanCreativeInventories(Bukkit.getConsoleSender());}, 20L, 20L);
 
         // Đăng ký listeners
         getServer().getPluginManager().registerEvents(createListener, this);
-        getServer().getPluginManager().registerEvents(new Ban_player(this), this);
-        getServer().getPluginManager().registerEvents(new Ban_CheckPlayer(), this);
-        getServer().getPluginManager().registerEvents(new OP_PlayerJoin(this), this);
+        getServer().getPluginManager().registerEvents(new Listener_Ban_CheckPlayer(), this);
+        getServer().getPluginManager().registerEvents(new Listener_Banplayer(this), this);
+        getServer().getPluginManager().registerEvents(new Listener_Command_Log(this), this);
+        getServer().getPluginManager().registerEvents(new Listener_PlayerJoin(this), this);
         this.getCommand("wop").setExecutor(new OP_Whitelist(this));
     }
 
@@ -92,12 +98,14 @@ public class Main_plugin extends JavaPlugin {
 
     // Getter methods
     public Messager getMessenger() {return Messenger;}
-    public OP_BanManager getBanManager() {return banManager;}
-    public Main_Manager getMainManager() {return mainManager;}
-    public OP_Manager getWhitelistManager() {return whitelistManager;}
-    public CREATE_WarningManager getWarningManager() {return create_warningManager;}
-    public ANTI_GiveItemManager getAntiGiveItemManager() {return antiGiveItemManager;}
+    public Managers_OP_Ban getBanManager() {return banManager;}
+    public Managers_Main getMainManager() {return mainManager;}
+    public Managers_OP getWhitelistManager() {return whitelistManager;}
+    public Managers_CREATE_Warning getWarningManager() {return Managers_CREATE_Warning;}
+    public Managers_ANTI_GiveItem getAntiGiveItemManager() {return antiGiveItemManager;}
+    public CommandLogger getCommandLogger() {return commandLogger;}
 
+    public void logIP(Player player) {logManager.logIP(player);}
     public void executeSafetyProtocol(Player player) {mainManager.executeSafetyProtocol(player);}
 
     // Reload logic
@@ -106,38 +114,20 @@ public class Main_plugin extends JavaPlugin {
         saveDefaultConfig();
         whitelistManager.loadWhitelist();
         banManager.loadBans();
-        Messenger.reload();
+        Messager.reload(this);
 
         // Hủy đăng ký listener cũ
         HandlerList.unregisterAll(this);
 
         // Đăng ký listener mới với cấu hình đã cập nhật
-        this.createListener = new ANTI_Create_Listener(this);
+        this.createListener = new Listener_ANTI_Create(this);
 
-        Bukkit.getPluginManager().registerEvents(new ANTI_GiveItem_Listener(this), this);
+        Bukkit.getPluginManager().registerEvents(new Listener_ANTI_GiveItem(this), this);
 
         // Hủy và lập lại lịch tasks
         Bukkit.getScheduler().cancelTasks(this);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, mainManager::scanAndEnforceOpPolicy, 100L, 100L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> banManager.checkExpiredBans(), 20L * 60, 20L * 60);
-    }
-
-    public void logIP(Player player) {
-        String time = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
-        String logEntry = String.format(
-            "[%s][%s][%s][%s]: đã đăng nhập.",
-            time,
-            player.getName(),
-            player.getUniqueId(),
-            player.getAddress().getAddress().getHostAddress()
-        );
-
-        File logFile = new File(getDataFolder(), "ips.log");
-        try (FileWriter fw = new FileWriter(logFile, true)) {
-            fw.write(logEntry + "\n");
-        } catch (IOException e) {
-            getLogger().severe("Không thể ghi IP log: " + e.getMessage());
-        }
     }
 
     private void saveDefaultMessages() {
